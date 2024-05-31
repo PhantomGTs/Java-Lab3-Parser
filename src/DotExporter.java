@@ -31,6 +31,15 @@ public class DotExporter {
             String argumentChildId = generateNodeId();
             exportNode(functionNode.getArgument(), sb, argumentChildId);
             sb.append(String.format("%s -> %s;\n", nodeName, argumentChildId));
+        } else if (node instanceof BinaryFunctionNode) {
+            BinaryFunctionNode functionNode = (BinaryFunctionNode) node;
+            sb.append(String.format("%s [label=\"%s\"];\n", nodeName, functionNode.getFunctionName()));
+            String leftChildId = generateNodeId();
+            String rightChildId = generateNodeId();
+            exportNode(functionNode.getLeftArgument(), sb, leftChildId);
+            exportNode(functionNode.getRightArgument(), sb, rightChildId);
+            sb.append(String.format("%s -> %s;\n", nodeName, leftChildId));
+            sb.append(String.format("%s -> %s;\n", nodeName, rightChildId));
         }
     }
 

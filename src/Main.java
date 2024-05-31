@@ -5,10 +5,10 @@ public class Main {
     {
         Parser parser = new Parser();
         //Node f = parser.parse("x + 2 * (y - 3)");
-        Node f = parser.parse("cos(x)");
-        Map<String, Double> variables = Map.of("x", 1.0, "y", 1.0);
-        double result = f.evaluate(variables);
-        System.out.println("Результат: " + result);
+        Node f = parser.parse("(x + 1) * (x + 1) + (x + 1) * 3 + (x + 1) * (x + 1)"); // Вызов функции pow
+        Map<String, Double> variables = Map.of("x", 2.0, "y", 2.0); // Задаем значения переменных
+        double result = f.evaluate(variables); // Вычисляем результат
+        System.out.println("Результат: " + result); // Выводим результат
 
         Simplifier simplifier = new Simplifier();
         Node g = simplifier.simplify(f);

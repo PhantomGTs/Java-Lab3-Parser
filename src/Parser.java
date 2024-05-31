@@ -1,68 +1,24 @@
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 public class Parser {
-
-    public Node parse(String expression) {
-        // Убираем пробелы
-        expression = expression.replaceAll("\\s+", "");
-
-        // Токенизация выражения
-        Stack<Node> nodes = new Stack<>();
-        Stack<Character> operators = new Stack<>();
-
-        int i = 0;
-        while (i < expression.length()) {
-            char c = expression.charAt(i);
-
-            if (Character.isDigit(c)) {
-                int start = i;
-                while (i < expression.length() && (Character.isDigit(expression.charAt(i)) || expression.charAt(i) == '.')) {
-                    i++;
-                }
-                nodes.push(new ConstantNode(Double.parseDouble(expression.substring(start, i))));
-                continue;
-            } else if (Character.isLowerCase(c)) {
-                int start = i;
-                while (i < expression.length() && Character.isLetter(expression.charAt(i))) {
-                    i++;
-                }
-                String variable = expression.substring(start, i);
-                nodes.push(new VariableNode(variable));
-                continue;
-            } else if (c == '(') {
-                operators.push(c);
-            } else if (c == ')') {
-                while (operators.peek() != '(') {
-                    nodes.push(createOperatorNode(operators.pop(), nodes.pop(), nodes.pop()));
-                }
-                operators.pop();
-            } else if (isOperator(c)) {
-                while (!operators.isEmpty() && precedence(c) <= precedence(operators.peek())) {
-                    nodes.push(createOperatorNode(operators.pop(), nodes.pop(), nodes.pop()));
-                }
-                operators.push(c);
-            } else if (Character.isUpperCase(c)) {
-                int start = i;
-                while (i < expression.length() && Character.isLetter(expression.charAt(i))) {
-                    i++;
-                }
-                String constant = expression.substring(start, i);
-                nodes.push(new ConstantNode(getConstantValue(constant)));
-                continue;
-            }
-            i++;
+    private Node createNode(String token) {
+        if (token.matches("[a-zA-Z]+")) {
+            return new VariableNode(token);
+        } else {
+            return new ConstantNode(Double.parseDouble(token));
         }
-
-        while (!operators.isEmpty()) {
-            nodes.push(createOperatorNode(operators.pop(), nodes.pop(), nodes.pop()));
-        }
-
-        return nodes.pop();
     }
 
-    private boolean isOperator(char c) {
-        return c == '+' || c == '-' || c == '*' || c == '/';
+    private Node applyOperator(char operator, Stack<Node> nodes) {
+        Node right = nodes.pop();
+        Node left = nodes.isEmpty() ? null : nodes.pop(); // Добавляем проверку на пустой стек
+
+        // Проверяем операнды на null
+        if (left == null || right == null) {
+            throw new IllegalArgumentException("Invalid expression");
+        }
+
+        return new OperatorNode(left, right, String.valueOf(operator));
     }
 
     private int precedence(char operator) {
@@ -74,35 +30,69 @@ public class Parser {
             case '/':
                 return 2;
             default:
-                return -1;
+                return 0;
         }
     }
 
-    private Node createOperatorNode(char operator, Node right, Node left) {
-        switch (operator) {
-            case '+':
-                return new OperatorNode(left, right, "+");
-            case '-':
-                return new OperatorNode(left, right, "-");
-            case '*':
-                return new OperatorNode(left, right, "*");
-            case '/':
-                return new OperatorNode(left, right, "/");
-            default:
-                throw new IllegalArgumentException("Unknown operator: " + operator);
-        }
-    }
+    public Node parse(String expression) {
+        Stack<Character> ops = new Stack<>();
+        Stack<Node> nodes = new Stack<>();
+        StringBuilder token = new StringBuilder();
 
-    private double getConstantValue(String constant) {
-        switch (constant) {
-            case "E":
-                return Math.E;
-            case "PI":
-                return Math.PI;
-            case "PHI":
-                return 1.61803398875; // Число Фи
-            default:
-                throw new IllegalArgumentException("Unknown constant: " + constant);
+        for (int i = 0; i < expression.length(); i++) {
+            char c = expression.charAt(i);
+
+            if (Character.isWhitespace(c)) {
+                continue;
+            }
+
+            if (Character.isDigit(c) || Character.isLetter(c) || c == '.') {
+                token.append(c);
+            } else {
+                if (token.length() > 0) {
+                    nodes.push(createNode(token.toString()));
+                    token.setLength(0);
+                }
+
+                if (c == '(') {
+                    ops.push(c);
+                } else if (c == ')') {
+                    while (!ops.isEmpty() && ops.peek() != '(') {
+                        nodes.push(applyOperator(ops.pop(), nodes));
+                    }
+                    if (!ops.isEmpty()) {
+                        ops.pop(); // Удаляем '('
+                    }
+
+                    // Check for function call
+                    if (!ops.isEmpty() && Character.isLetter(ops.peek())) {
+                        char function = ops.pop();
+                        if (function == 'c') {
+                            nodes.push(new FunctionNode(nodes.pop(), "cos"));
+                        } else if (function == 'w') { // Обработка функции pow
+                            Node right = nodes.pop();
+                            Node left = nodes.pop();
+                            nodes.push(new BinaryFunctionNode(left, right, "pow"));
+                            ops.pop(); // Удаляем 'w'
+                        }
+                    }
+                } else {
+                    while (!ops.isEmpty() && precedence(ops.peek()) >= precedence(c)) {
+                        nodes.push(applyOperator(ops.pop(), nodes));
+                    }
+                    ops.push(c);
+                }
+            }
         }
+
+        if (token.length() > 0) {
+            nodes.push(createNode(token.toString()));
+        }
+
+        while (!ops.isEmpty()) {
+            nodes.push(applyOperator(ops.pop(), nodes));
+        }
+
+        return nodes.pop();
     }
 }

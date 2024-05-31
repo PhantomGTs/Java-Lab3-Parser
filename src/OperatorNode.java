@@ -13,22 +13,26 @@ public class OperatorNode extends Node {
 
     @Override
     public double evaluate(Map<String, Double> variables) {
-        double leftValue = left.evaluate(variables);
-        double rightValue = right.evaluate(variables);
+        // Проверяем оператор и выполняем соответствующую операцию
         switch (operator) {
             case "+":
-                return leftValue + rightValue;
+                return left.evaluate(variables) + right.evaluate(variables);
             case "-":
-                return leftValue - rightValue;
+                return left.evaluate(variables) - right.evaluate(variables);
             case "*":
-                return leftValue * rightValue;
+                return left.evaluate(variables) * right.evaluate(variables);
             case "/":
-                return leftValue / rightValue;
+                return left.evaluate(variables) / right.evaluate(variables);
+            case "(": // Обработка оператора '('
+                return right.evaluate(variables); // Просто возвращаем результат правого узла
+            case ",":
+                return right.evaluate(variables); // Просто возвращаем результат правого узла для запятой
             default:
                 throw new UnsupportedOperationException("Unknown operator: " + operator);
         }
     }
 
+    // Переопределяем методы, возвращающие левый и правый узлы, и оператор
     @Override
     public Node getLeft() {
         return left;

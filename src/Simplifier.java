@@ -26,13 +26,29 @@ public class Simplifier {
             OperatorNode opNode = (OperatorNode) node;
             Node left = simplifyNode(opNode.getLeft());
             Node right = simplifyNode(opNode.getRight());
-            Node newNode = new OperatorNode(left, right, opNode.getOperator());
+            Node newNode;
+            if (left != null && right != null) {
+                newNode = new OperatorNode(left, right, opNode.getOperator());
+            } else if (left != null) {
+                newNode = left;
+            } else if (right != null) {
+                newNode = right;
+            } else {
+                newNode = node; // Оставляем без изменений, если нет дочерних узлов
+            }
             seenNodes.put(nodeKey, newNode);
             return newNode;
         } else if (node instanceof FunctionNode) {
             FunctionNode funcNode = (FunctionNode) node;
             Node arg = simplifyNode(funcNode.getArgument());
             Node newNode = new FunctionNode(arg, funcNode.getFunctionName());
+            seenNodes.put(nodeKey, newNode);
+            return newNode;
+        } else if (node instanceof BinaryFunctionNode) {
+            BinaryFunctionNode funcNode = (BinaryFunctionNode) node;
+            Node leftArg = simplifyNode(funcNode.getLeftArgument());
+            Node rightArg = simplifyNode(funcNode.getRightArgument());
+            Node newNode = new BinaryFunctionNode(leftArg, rightArg, funcNode.getFunctionName());
             seenNodes.put(nodeKey, newNode);
             return newNode;
         } else {
@@ -52,6 +68,9 @@ public class Simplifier {
         } else if (node instanceof FunctionNode) {
             FunctionNode funcNode = (FunctionNode) node;
             return "F:" + funcNode.getFunctionName() + "(" + getNodeKey(funcNode.getArgument()) + ")";
+        } else if (node instanceof BinaryFunctionNode) {
+            BinaryFunctionNode funcNode = (BinaryFunctionNode) node;
+            return "BF:" + funcNode.getFunctionName() + "(" + getNodeKey(funcNode.getLeftArgument()) + "," + getNodeKey(funcNode.getRightArgument()) + ")";
         } else {
             throw new IllegalArgumentException("Unknown node type");
         }
