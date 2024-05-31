@@ -1,0 +1,34 @@
+import java.util.Map;
+
+public class FunctionNode extends Node {
+    private Node argument;
+    private String functionName;
+
+    public FunctionNode(Node argument, String functionName) {
+        this.argument = argument;
+        this.functionName = functionName;
+    }
+
+    @Override
+    public double evaluate(Map<String, Double> variables) {
+        double argumentValue = argument.evaluate(variables);
+        switch (functionName) {
+            case "pow":
+                return Math.pow(argumentValue, 2); // Пример реализации, можно расширить
+            case "cos":
+                return Math.cos(argumentValue);
+            default:
+                throw new UnsupportedOperationException("Unknown function: " + functionName);
+        }
+    }
+
+    @Override
+    public String getFunctionName() {
+        return functionName;
+    }
+
+    @Override
+    public Node getArgument() {
+        return argument;
+    }
+}
