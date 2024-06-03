@@ -1,15 +1,23 @@
-import java.util.Map;
+import java.util.*;
 
 public class Simplifier {
     public static Node simplify(Node expression) {
-        return simplifyExpression(expression);
+        List<Node> uniqueNodes = new ArrayList<>();
+        return simplifyExpression(expression, uniqueNodes);
     }
 
-    private static Node simplifyExpression(Node expression) {
+    private static Node simplifyExpression(Node expression, List<Node> uniqueNodes) {
+        // Проверяем, есть ли уже упрощенный узел для текущего узла
+        for (Node node : uniqueNodes) {
+            if (expression.equals(node)) {
+                return node;
+            }
+        }
+
         if (expression instanceof BinaryOperationNode) {
             BinaryOperationNode binaryNode = (BinaryOperationNode) expression;
-            Node left = simplifyExpression(binaryNode.getLeft());
-            Node right = simplifyExpression(binaryNode.getRight());
+            Node left = simplifyExpression(binaryNode.getLeft(), uniqueNodes);
+            Node right = simplifyExpression(binaryNode.getRight(), uniqueNodes);
 
             // Применяем правила упрощения
             if (left instanceof ConstantNode && right instanceof ConstantNode) {
@@ -35,16 +43,30 @@ public class Simplifier {
                     default:
                         throw new IllegalArgumentException("Unsupported operator: " + binaryNode.getOperator());
                 }
-                return new ConstantNode(result);
+                ConstantNode simplifiedNode = new ConstantNode(result);
+                uniqueNodes.add(simplifiedNode); // Добавляем упрощенный узел в список
+                return simplifiedNode;
             } else {
-                // Если один из операндов не является константой, то упрощаем дальше
-                return new BinaryOperationNode(left, right, binaryNode.getOperator());
+                BinaryOperationNode simplifiedNode = new BinaryOperationNode(left, right, binaryNode.getOperator());
+                uniqueNodes.add(simplifiedNode); // Добавляем упрощенный узел в список
+                return simplifiedNode;
             }
         } else if (expression instanceof UnaryOperationNode) {
             UnaryOperationNode unaryNode = (UnaryOperationNode) expression;
-            Node operand = simplifyExpression(unaryNode.getOperand());
-            return new UnaryOperationNode(operand, unaryNode.getOperator().charAt(0));
-
+            Node operand = simplifyExpression(unaryNode.getOperand(), uniqueNodes);
+            UnaryOperationNode simplifiedNode = new UnaryOperationNode(operand, unaryNode.getOperator().charAt(0));
+            uniqueNodes.add(simplifiedNode); // Добавляем упрощенный узел в список
+            return simplifiedNode;
+        } else if (expression instanceof FunctionNode) {
+            FunctionNode functionNode = (FunctionNode) expression;
+            Node[] arguments = functionNode.getArguments();
+            Node[] simplifiedArguments = new Node[arguments.length];
+            for (int i = 0; i < arguments.length; i++) {
+                simplifiedArguments[i] = simplifyExpression(arguments[i], uniqueNodes);
+            }
+            FunctionNode simplifiedNode = new FunctionNode(simplifiedArguments[0], functionNode.getName());
+            uniqueNodes.add(simplifiedNode); // Добавляем упрощенный узел в список
+            return simplifiedNode;
         } else {
             // Если узел не является операцией, то он уже упрощен
             return expression;

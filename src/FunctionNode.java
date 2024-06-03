@@ -31,4 +31,10 @@ public class FunctionNode extends Node {
     public Node getArgument() {
         return argument;
     }
+
+    // Метод, возвращающий массив аргументов.
+    // Для этой реализации массив содержит только один аргумент.
+    public Node[] getArguments() {
+        return new Node[] { argument };
+    }
 }
