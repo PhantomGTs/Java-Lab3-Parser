@@ -1,3 +1,5 @@
+package lab_v1;
+
 public class DotExporter {
     private int nodeId = 0;
 

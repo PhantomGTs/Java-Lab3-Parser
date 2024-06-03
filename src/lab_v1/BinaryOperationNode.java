@@ -1,3 +1,5 @@
+package lab_v1;
+
 import java.util.Map;
 
 public class BinaryOperationNode implements Node {
@@ -69,6 +71,8 @@ public class BinaryOperationNode implements Node {
 
     @Override
     public String toString() {
-        return "(" + left.toString() + " " + operator + " " + right.toString() + ")";
+        return String.format("%s %s %s", left, operator, right);
     }
+
+
 }

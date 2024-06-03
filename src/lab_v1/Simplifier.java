@@ -1,3 +1,5 @@
+package lab_v1;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class Simplifier {
 
         // После упрощения, проверяем, не создали ли мы уже такой узел ранее
         for (Node node : uniqueNodes) {
-            if (areEquivalent(simplifiedNode, node)) {
+            if (expression.getClass() == node.getClass() && areEquivalent(expression, node)) {
                 return node;
             }
         }

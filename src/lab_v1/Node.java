@@ -1,3 +1,5 @@
+package lab_v1;
+
 import java.util.Map;
 
 public interface Node {

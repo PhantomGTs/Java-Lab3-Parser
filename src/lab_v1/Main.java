@@ -1,19 +1,21 @@
+package lab_v1;
+
 import java.util.*;
 
 public class Main {
     public static void main(String[] args)
     {
-//        Parser parser = new Parser();
-//        Node f = parser.parse("(x + 1) * (x + 1) + (x + 1) * 3 + (x + 1) * (x + 1)"); // Вызов функции pow
+//        lab_v1.Parser parser = new lab_v1.Parser();
+//        lab_v1.Node f = parser.parse("(x + 1) * (x + 1) + (x + 1) * 3 + (x + 1) * (x + 1)"); // Вызов функции pow
 //        Map<String, Double> variables = Map.of("x", 2.0, "y", 2.0); // Задаем значения переменных
 //        double result = f.evaluate(variables); // Вычисляем результат
 //        System.out.println("Результат: " + result); // Выводим результат
 //
-//        Simplifier simplifier = new Simplifier();
-//        Node g = simplifier.simplify(f);
+//        lab_v1.Simplifier simplifier = new lab_v1.Simplifier();
+//        lab_v1.Node g = simplifier.simplify(f);
 //        System.out.println("Упрощенное выражение: " + g.evaluate(variables));
 //
-//        DotExporter exporter = new DotExporter();
+//        lab_v1.DotExporter exporter = new lab_v1.DotExporter();
 //        String dotFormat = exporter.export(g); // Используем упрощенное дерево
 //        System.out.println(dotFormat);
 
@@ -33,7 +35,7 @@ public class Main {
         System.out.println("Упрощенное выражение g: " + g);
 
 
-        // Создаем объект DotExporter после упрощения выражения
+        // Создаем объект lab_v1.DotExporter после упрощения выражения
         DotExporter dotG = new DotExporter();
 
         System.out.println("DOT-граф f:");
@@ -43,13 +45,13 @@ public class Main {
         System.out.println(dotG.export(g));
 
 //        // Пример выражения: (x + 1) * (x + 1)
-//        Node expression = new BinaryOperationNode(
-//                new BinaryOperationNode(new VariableNode("x"), new ConstantNode(1), "+"),
-//                new BinaryOperationNode(new VariableNode("x"), new ConstantNode(1), "+"),
+//        lab_v1.Node expression = new lab_v1.BinaryOperationNode(
+//                new lab_v1.BinaryOperationNode(new lab_v1.VariableNode("x"), new lab_v1.ConstantNode(1), "+"),
+//                new lab_v1.BinaryOperationNode(new lab_v1.VariableNode("x"), new lab_v1.ConstantNode(1), "+"),
 //                "*"
 //        );
 //
-//        Node simplifiedExpression = Simplifier.simplify(expression);
+//        lab_v1.Node simplifiedExpression = lab_v1.Simplifier.simplify(expression);
 //
 //        // Печатаем упрощенное выражение
 //        System.out.println(simplifiedExpression);

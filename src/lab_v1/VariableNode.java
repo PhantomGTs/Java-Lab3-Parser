@@ -1,3 +1,5 @@
+package lab_v1;
+
 import java.util.Map;
 
 public class VariableNode implements Node {
@@ -17,7 +19,7 @@ public class VariableNode implements Node {
         return name;
     }
 
-    // Добавленные методы из интерфейса Node, которые необходимо реализовать
+    // Добавленные методы из интерфейса lab_v1.Node, которые необходимо реализовать
     @Override
     public double getValue() {
         return 0; // Реализуйте этот метод с учетом ваших требований

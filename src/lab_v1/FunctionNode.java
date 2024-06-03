@@ -1,3 +1,5 @@
+package lab_v1;
+
 import java.util.Map;
 
 public class FunctionNode implements Node {
@@ -70,7 +72,7 @@ public class FunctionNode implements Node {
         StringBuilder sb = new StringBuilder();
         sb.append(functionName).append("(");
         for (int i = 0; i < arguments.length; i++) {
-            sb.append(arguments[i].toString());
+            sb.append(arguments[i]);
             if (i < arguments.length - 1) {
                 sb.append(", ");
             }

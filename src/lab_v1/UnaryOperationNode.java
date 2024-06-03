@@ -1,3 +1,5 @@
+package lab_v1;
+
 import java.util.Map;
 
 public class UnaryOperationNode implements Node {
@@ -61,6 +63,6 @@ public class UnaryOperationNode implements Node {
 
     @Override
     public String toString() {
-        return "(" + operator + " " + operand.toString() + ")";
+        return String.format("%s %s", operator, operand);
     }
 }
