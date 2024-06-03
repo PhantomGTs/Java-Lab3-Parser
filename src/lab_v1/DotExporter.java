@@ -1,5 +1,5 @@
 package lab_v1;
-
+import java.util.HashMap;
 public class DotExporter {
     private int nodeId = 0;
 
@@ -11,7 +11,21 @@ public class DotExporter {
         return sb.toString();
     }
 
+    // Метод для получения метки узла в зависимости от его типа
+    private String getNodeLabel(Node node) {
+        return switch (node) {
+            case OperatorNode binaryOperationNode -> binaryOperationNode.getOperator() + "";
+            case UnaryOperationNode unaryOperationNode -> unaryOperationNode.getOperator() + "";
+            case FunctionNode functionNode -> functionNode.getFunctionName();
+            case BinaryFunctionNode binFunctionNode -> binFunctionNode.getFunctionName();
+            case VariableNode variableNode -> variableNode.getName();
+            case ConstantNode numberNode -> Double.toString(numberNode.getValue());
+            case null, default -> node.toString();
+        };
+    }
+
     private void exportNode(Node node, StringBuilder sb, String nodeName) {
+
         if (node instanceof ConstantNode) {
             ConstantNode constantNode = (ConstantNode) node;
             sb.append(String.format("%s [label=\"%s\"];\n", nodeName, constantNode.getValue()));

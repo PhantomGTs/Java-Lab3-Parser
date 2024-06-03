@@ -2,82 +2,44 @@ package lab_v1;
 
 import java.util.Map;
 
-public class FunctionNode implements Node {
+public class FunctionNode extends Node {
+    private Node argument;
     private String functionName;
-    private Node[] arguments;
 
-    public FunctionNode(String functionName, Node[] arguments) {
+    public FunctionNode(Node argument, String functionName) {
+        this.argument = argument;
         this.functionName = functionName;
-        this.arguments = arguments;
     }
 
+    @Override
     public double evaluate(Map<String, Double> variables) {
-        double[] argumentValues = new double[arguments.length];
-        for (int i = 0; i < arguments.length; i++) {
-            argumentValues[i] = arguments[i].evaluate(variables);
-        }
-
+        double argumentValue = argument.evaluate(variables);
         switch (functionName) {
-            case "pow":
-                if (argumentValues.length != 2) {
-                    throw new IllegalArgumentException("pow function expects exactly two arguments");
-                }
-                return Math.pow(argumentValues[0], argumentValues[1]);
             case "cos":
-                if (argumentValues.length != 1) {
-                    throw new IllegalArgumentException("cos function expects exactly one argument");
-                }
-                return Math.cos(argumentValues[0]);
+                return Math.cos(argumentValue);
             default:
                 throw new UnsupportedOperationException("Unknown function: " + functionName);
         }
     }
 
+    @Override
     public String getFunctionName() {
         return functionName;
     }
 
-    public Node[] getArguments() {
-        return arguments;
-    }
-
-
-    public double getValue() {
-        return 0; // Implement this method according to your requirements
-    }
-
-    public Node getLeft() {
-        return null; // Implement this method according to your requirements
-    }
-
-    public Node getRight() {
-        return null; // Implement this method according to your requirements
-    }
-
-    public String getOperator() {
-        return null; // Implement this method according to your requirements
-    }
-
-    public Node getArgument() {
-        return null; // Implement this method according to your requirements
-    }
-
     @Override
-    public String getName() {
-        return functionName;
+    public Node getArgument() {
+        return argument;
+    }
+
+    // Метод, возвращающий массив аргументов.
+    // Для этой реализации массив содержит только один аргумент.
+    public Node[] getArguments() {
+        return new Node[] { argument };
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(functionName).append("(");
-        for (int i = 0; i < arguments.length; i++) {
-            sb.append(arguments[i]);
-            if (i < arguments.length - 1) {
-                sb.append(", ");
-            }
-        }
-        sb.append(")");
-        return sb.toString();
+        return functionName + "(" + argument + ")";
     }
 }

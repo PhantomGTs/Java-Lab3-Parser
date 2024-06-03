@@ -2,7 +2,7 @@ package lab_v1;
 
 import java.util.Map;
 
-public class OperatorNode implements Node {
+public class OperatorNode extends Node {
     private Node left;
     private Node right;
     private String operator;
@@ -25,7 +25,7 @@ public class OperatorNode implements Node {
                 return left.evaluate(variables) * right.evaluate(variables);
             case "/":
                 return left.evaluate(variables) / right.evaluate(variables);
-            case "(":
+            case "(": // Обработка оператора '('
                 return right.evaluate(variables); // Просто возвращаем результат правого узла
             case ",":
                 return right.evaluate(variables); // Просто возвращаем результат правого узла для запятой
@@ -34,16 +34,7 @@ public class OperatorNode implements Node {
         }
     }
 
-    @Override
-    public String getName() {
-        return null; // Реализуйте этот метод с учетом ваших требований
-    }
-
-    @Override
-    public double getValue() {
-        return 0; // Реализуйте этот метод с учетом ваших требований
-    }
-
+    // Переопределяем методы, возвращающие левый и правый узлы, и оператор
     @Override
     public Node getLeft() {
         return left;
@@ -60,23 +51,7 @@ public class OperatorNode implements Node {
     }
 
     @Override
-    public String getFunctionName() {
-        return null; // Реализуйте этот метод с учетом ваших требований
-    }
-
-    @Override
-    public Node getArgument() {
-        return null; // Реализуйте этот метод с учетом ваших требований
-    }
-
-    @Override
     public String toString() {
-        if (operator.equals("(")) {
-            return "(" + right.toString() + ")";
-        } else if (operator.equals(",")) {
-            return left.toString() + ", " + right.toString();
-        } else {
-            return "(" + left.toString() + " " + operator + " " + right.toString() + ")";
-        }
+        return "(" + left.toString() + " " + operator + " " + right.toString() + ")";
     }
 }

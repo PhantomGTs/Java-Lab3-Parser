@@ -2,11 +2,11 @@ package lab_v1;
 
 import java.util.Map;
 
-public class UnaryOperationNode implements Node {
+public class UnaryOperationNode extends Node {
     private final Node operand;
-    private final String operator; // Изменение типа оператора на String
+    private final char operator;
 
-    public UnaryOperationNode(Node operand, String operator) { // Изменение аргумента оператора на String
+    public UnaryOperationNode(Node operand, char operator) {
         this.operand = operand;
         this.operator = operator;
     }
@@ -17,14 +17,14 @@ public class UnaryOperationNode implements Node {
 
     @Override
     public String getOperator() {
-        return operator;
+        return String.valueOf(operator);
     }
 
     @Override
     public double evaluate(Map<String, Double> variables) {
         double operandValue = operand.evaluate(variables);
         switch (operator) {
-            case "-":
+            case '-':
                 return -operandValue;
             default:
                 throw new IllegalArgumentException("Invalid operator: " + operator);
@@ -33,36 +33,36 @@ public class UnaryOperationNode implements Node {
 
     @Override
     public String getName() {
-        return operator; // Возвращаем оператор в виде строки
+        return "";
     }
 
     @Override
     public double getValue() {
-        return 0; // Реализуйте этот метод с учетом ваших требований
+        return 0;
     }
 
     @Override
     public Node getLeft() {
-        return null; // Реализуйте этот метод с учетом ваших требований
+        return null;
     }
 
     @Override
     public Node getRight() {
-        return null; // Реализуйте этот метод с учетом ваших требований
+        return null;
     }
 
     @Override
     public String getFunctionName() {
-        return ""; // Реализуйте этот метод с учетом ваших требований
+        return "";
     }
 
     @Override
     public Node getArgument() {
-        return operand; // Реализуйте этот метод с учетом ваших требований
+        return operand;
     }
 
     @Override
     public String toString() {
-        return String.format("%s %s", operator, operand);
+        return operator + operand.toString();
     }
 }

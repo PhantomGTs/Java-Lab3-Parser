@@ -2,7 +2,7 @@ package lab_v1;
 
 import java.util.Map;
 
-public class BinaryFunctionNode implements Node {
+class BinaryFunctionNode extends Node {
     private Node left, right;
     private String functionName;
 
@@ -26,16 +26,6 @@ public class BinaryFunctionNode implements Node {
     }
 
     @Override
-    public String getName() {
-        return null; // Реализуйте этот метод с учетом ваших требований
-    }
-
-    @Override
-    public double getValue() {
-        return 0; // Реализуйте этот метод с учетом ваших требований
-    }
-
-    @Override
     public Node getLeft() {
         return left;
     }
@@ -46,17 +36,12 @@ public class BinaryFunctionNode implements Node {
     }
 
     @Override
-    public String getOperator() {
-        return null; // Реализуйте этот метод с учетом ваших требований
-    }
-
-    @Override
     public String getFunctionName() {
         return functionName;
     }
 
     @Override
-    public Node getArgument() {
-        return null; // Реализуйте этот метод с учетом ваших требований
+    public String toString() {
+        return functionName + "(" + left + ", " + right + ")";
     }
 }

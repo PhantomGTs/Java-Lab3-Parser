@@ -70,7 +70,7 @@ public class Parser {
                     if (!ops.isEmpty() && Character.isLetter(ops.peek())) {
                         char function = ops.pop();
                         if (function == 'c') {
-                            nodes.push(new FunctionNode("cos", new Node[] { nodes.pop() }));
+                            nodes.push(new FunctionNode(nodes.pop(), "cos"));
                         } else if (function == 'w') { // Обработка функции pow
                             Node right = nodes.pop();
                             Node left = nodes.pop();

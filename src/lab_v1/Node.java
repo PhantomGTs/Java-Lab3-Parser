@@ -2,13 +2,13 @@ package lab_v1;
 
 import java.util.Map;
 
-public interface Node {
-    double evaluate(Map<String, Double> variables);
-    String getName();
-    double getValue();
-    Node getLeft();
-    Node getRight();
-    String getOperator();
-    String getFunctionName();
-    Node getArgument();
+public abstract class Node {
+    public abstract double evaluate(Map<String, Double> variables);
+    public String getName() { return ""; }
+    public double getValue() { return 0; }
+    public Node getLeft() { return null; }
+    public Node getRight() { return null; }
+    public String getOperator() { return ""; }
+    public String getFunctionName() { return ""; }
+    public Node getArgument() { return null; }
 }
