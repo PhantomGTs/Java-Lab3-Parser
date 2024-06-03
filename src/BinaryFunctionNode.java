@@ -1,36 +1,39 @@
 import java.util.Map;
 
-public class BinaryFunctionNode extends Node {
-    private Node leftArgument;
-    private Node rightArgument;
+class BinaryFunctionNode extends Node {
+    private Node left, right;
     private String functionName;
 
-    public BinaryFunctionNode(Node leftArgument, Node rightArgument, String functionName) {
-        this.leftArgument = leftArgument;
-        this.rightArgument = rightArgument;
+    public BinaryFunctionNode(Node left, Node right, String functionName) {
+        this.left = left;
+        this.right = right;
         this.functionName = functionName;
     }
 
     @Override
     public double evaluate(Map<String, Double> variables) {
-        double leftValue = leftArgument.evaluate(variables);
-        double rightValue = rightArgument.evaluate(variables);
+        double leftValue = left.evaluate(variables);
+        double rightValue = right.evaluate(variables);
+
         switch (functionName) {
             case "pow":
-                return Math.pow(rightValue, leftValue); // Поменяли местами аргументы
+                return Math.pow(leftValue, rightValue);
             default:
-                throw new UnsupportedOperationException("Unknown function: " + functionName);
+                throw new IllegalArgumentException("Unknown function: " + functionName);
         }
     }
 
-    public Node getLeftArgument() {
-        return leftArgument;
+    @Override
+    public Node getLeft() {
+        return left;
     }
 
-    public Node getRightArgument() {
-        return rightArgument;
+    @Override
+    public Node getRight() {
+        return right;
     }
 
+    @Override
     public String getFunctionName() {
         return functionName;
     }

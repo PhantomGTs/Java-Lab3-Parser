@@ -1,78 +1,53 @@
-import java.util.HashMap;
 import java.util.Map;
 
 public class Simplifier {
-    private Map<String, Node> seenNodes;
-
-    public Simplifier() {
-        this.seenNodes = new HashMap<>();
+    public static Node simplify(Node expression) {
+        return simplifyExpression(expression);
     }
 
-    public Node simplify(Node root) {
-        return simplifyNode(root);
-    }
+    private static Node simplifyExpression(Node expression) {
+        if (expression instanceof BinaryOperationNode) {
+            BinaryOperationNode binaryNode = (BinaryOperationNode) expression;
+            Node left = simplifyExpression(binaryNode.getLeft());
+            Node right = simplifyExpression(binaryNode.getRight());
 
-    private Node simplifyNode(Node node) {
-        if (node == null) {
-            return null;
-        }
-
-        String nodeKey = getNodeKey(node);
-        if (seenNodes.containsKey(nodeKey)) {
-            return seenNodes.get(nodeKey);
-        }
-
-        if (node instanceof OperatorNode) {
-            OperatorNode opNode = (OperatorNode) node;
-            Node left = simplifyNode(opNode.getLeft());
-            Node right = simplifyNode(opNode.getRight());
-            Node newNode;
-            if (left != null && right != null) {
-                newNode = new OperatorNode(left, right, opNode.getOperator());
-            } else if (left != null) {
-                newNode = left;
-            } else if (right != null) {
-                newNode = right;
+            // Применяем правила упрощения
+            if (left instanceof ConstantNode && right instanceof ConstantNode) {
+                double leftValue = ((ConstantNode) left).getValue();
+                double rightValue = ((ConstantNode) right).getValue();
+                double result;
+                switch (binaryNode.getOperator()) {
+                    case "+":
+                        result = leftValue + rightValue;
+                        break;
+                    case "-":
+                        result = leftValue - rightValue;
+                        break;
+                    case "*":
+                        result = leftValue * rightValue;
+                        break;
+                    case "/":
+                        if (rightValue == 0) {
+                            throw new ArithmeticException("Division by zero");
+                        }
+                        result = leftValue / rightValue;
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unsupported operator: " + binaryNode.getOperator());
+                }
+                return new ConstantNode(result);
             } else {
-                newNode = node; // Оставляем без изменений, если нет дочерних узлов
+                // Если один из операндов не является константой, то упрощаем дальше
+                return new BinaryOperationNode(left, right, binaryNode.getOperator());
             }
-            seenNodes.put(nodeKey, newNode);
-            return newNode;
-        } else if (node instanceof FunctionNode) {
-            FunctionNode funcNode = (FunctionNode) node;
-            Node arg = simplifyNode(funcNode.getArgument());
-            Node newNode = new FunctionNode(arg, funcNode.getFunctionName());
-            seenNodes.put(nodeKey, newNode);
-            return newNode;
-        } else if (node instanceof BinaryFunctionNode) {
-            BinaryFunctionNode funcNode = (BinaryFunctionNode) node;
-            Node leftArg = simplifyNode(funcNode.getLeftArgument());
-            Node rightArg = simplifyNode(funcNode.getRightArgument());
-            Node newNode = new BinaryFunctionNode(leftArg, rightArg, funcNode.getFunctionName());
-            seenNodes.put(nodeKey, newNode);
-            return newNode;
-        } else {
-            seenNodes.put(nodeKey, node);
-            return node;
-        }
-    }
+        } else if (expression instanceof UnaryOperationNode) {
+            UnaryOperationNode unaryNode = (UnaryOperationNode) expression;
+            Node operand = simplifyExpression(unaryNode.getOperand());
+            return new UnaryOperationNode(operand, unaryNode.getOperator().charAt(0));
 
-    private String getNodeKey(Node node) {
-        if (node instanceof ConstantNode) {
-            return "C:" + ((ConstantNode) node).getValue();
-        } else if (node instanceof VariableNode) {
-            return "V:" + ((VariableNode) node).getName();
-        } else if (node instanceof OperatorNode) {
-            OperatorNode opNode = (OperatorNode) node;
-            return "O:" + opNode.getOperator() + "(" + getNodeKey(opNode.getLeft()) + "," + getNodeKey(opNode.getRight()) + ")";
-        } else if (node instanceof FunctionNode) {
-            FunctionNode funcNode = (FunctionNode) node;
-            return "F:" + funcNode.getFunctionName() + "(" + getNodeKey(funcNode.getArgument()) + ")";
-        } else if (node instanceof BinaryFunctionNode) {
-            BinaryFunctionNode funcNode = (BinaryFunctionNode) node;
-            return "BF:" + funcNode.getFunctionName() + "(" + getNodeKey(funcNode.getLeftArgument()) + "," + getNodeKey(funcNode.getRightArgument()) + ")";
         } else {
-            throw new IllegalArgumentException("Unknown node type");
+            // Если узел не является операцией, то он уже упрощен
+            return expression;
         }
     }
 }
