@@ -1,10 +1,10 @@
 import java.util.Map;
 
-public class UnaryOperationNode extends Node {
+public class UnaryOperationNode implements Node {
     private final Node operand;
-    private final char operator;
+    private final String operator; // Изменение типа оператора на String
 
-    public UnaryOperationNode(Node operand, char operator) {
+    public UnaryOperationNode(Node operand, String operator) { // Изменение аргумента оператора на String
         this.operand = operand;
         this.operator = operator;
     }
@@ -15,14 +15,14 @@ public class UnaryOperationNode extends Node {
 
     @Override
     public String getOperator() {
-        return String.valueOf(operator);
+        return operator;
     }
 
     @Override
     public double evaluate(Map<String, Double> variables) {
         double operandValue = operand.evaluate(variables);
         switch (operator) {
-            case '-':
+            case "-":
                 return -operandValue;
             default:
                 throw new IllegalArgumentException("Invalid operator: " + operator);
@@ -31,36 +31,36 @@ public class UnaryOperationNode extends Node {
 
     @Override
     public String getName() {
-        return "";
+        return operator; // Возвращаем оператор в виде строки
     }
 
     @Override
     public double getValue() {
-        return 0;
+        return 0; // Реализуйте этот метод с учетом ваших требований
     }
 
     @Override
     public Node getLeft() {
-        return null;
+        return null; // Реализуйте этот метод с учетом ваших требований
     }
 
     @Override
     public Node getRight() {
-        return null;
+        return null; // Реализуйте этот метод с учетом ваших требований
     }
 
     @Override
     public String getFunctionName() {
-        return "";
+        return ""; // Реализуйте этот метод с учетом ваших требований
     }
 
     @Override
     public Node getArgument() {
-        return operand;
+        return operand; // Реализуйте этот метод с учетом ваших требований
     }
 
     @Override
     public String toString() {
-        return operator + operand.toString();
+        return "(" + operator + " " + operand.toString() + ")";
     }
 }

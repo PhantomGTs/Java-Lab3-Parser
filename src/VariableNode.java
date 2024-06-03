@@ -1,6 +1,6 @@
 import java.util.Map;
 
-public class VariableNode extends Node {
+public class VariableNode implements Node {
     private String name;
 
     public VariableNode(String name) {
@@ -14,6 +14,42 @@ public class VariableNode extends Node {
 
     @Override
     public String getName() {
+        return name;
+    }
+
+    // Добавленные методы из интерфейса Node, которые необходимо реализовать
+    @Override
+    public double getValue() {
+        return 0; // Реализуйте этот метод с учетом ваших требований
+    }
+
+    @Override
+    public Node getLeft() {
+        return null; // Реализуйте этот метод с учетом ваших требований
+    }
+
+    @Override
+    public Node getRight() {
+        return null; // Реализуйте этот метод с учетом ваших требований
+    }
+
+    @Override
+    public String getOperator() {
+        return null; // Реализуйте этот метод с учетом ваших требований
+    }
+
+    @Override
+    public String getFunctionName() {
+        return null; // Реализуйте этот метод с учетом ваших требований
+    }
+
+    @Override
+    public Node getArgument() {
+        return null; // Реализуйте этот метод с учетом ваших требований
+    }
+
+    @Override
+    public String toString() {
         return name;
     }
 }

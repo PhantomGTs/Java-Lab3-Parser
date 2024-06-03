@@ -1,6 +1,6 @@
 import java.util.Map;
 
-public class BinaryOperationNode extends Node {
+public class BinaryOperationNode implements Node {
     private final Node left;
     private final Node right;
     private final String operator;
@@ -33,6 +33,16 @@ public class BinaryOperationNode extends Node {
     }
 
     @Override
+    public String getName() {
+        return operator; // Реализуйте этот метод с учетом ваших требований
+    }
+
+    @Override
+    public double getValue() {
+        return 0; // Реализуйте этот метод с учетом ваших требований
+    }
+
+    @Override
     public Node getLeft() {
         return left;
     }
@@ -42,7 +52,23 @@ public class BinaryOperationNode extends Node {
         return right;
     }
 
+    @Override
     public String getOperator() {
         return operator;
+    }
+
+    @Override
+    public String getFunctionName() {
+        return null; // Реализуйте этот метод с учетом ваших требований
+    }
+
+    @Override
+    public Node getArgument() {
+        return null; // Реализуйте этот метод с учетом ваших требований
+    }
+
+    @Override
+    public String toString() {
+        return "(" + left.toString() + " " + operator + " " + right.toString() + ")";
     }
 }

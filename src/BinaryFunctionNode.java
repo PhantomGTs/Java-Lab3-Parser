@@ -1,6 +1,6 @@
 import java.util.Map;
 
-class BinaryFunctionNode extends Node {
+public class BinaryFunctionNode implements Node {
     private Node left, right;
     private String functionName;
 
@@ -24,6 +24,16 @@ class BinaryFunctionNode extends Node {
     }
 
     @Override
+    public String getName() {
+        return null; // Реализуйте этот метод с учетом ваших требований
+    }
+
+    @Override
+    public double getValue() {
+        return 0; // Реализуйте этот метод с учетом ваших требований
+    }
+
+    @Override
     public Node getLeft() {
         return left;
     }
@@ -34,7 +44,17 @@ class BinaryFunctionNode extends Node {
     }
 
     @Override
+    public String getOperator() {
+        return null; // Реализуйте этот метод с учетом ваших требований
+    }
+
+    @Override
     public String getFunctionName() {
         return functionName;
+    }
+
+    @Override
+    public Node getArgument() {
+        return null; // Реализуйте этот метод с учетом ваших требований
     }
 }

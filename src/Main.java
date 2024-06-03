@@ -28,12 +28,30 @@ public class Main {
         double resultG = g.evaluate(variables);
 
         System.out.println("Вычисленное значение f: " + resultF);
+        System.out.println("");
         System.out.println("Вычисленное значение g: " + resultG);
+        System.out.println("Упрощенное выражение g: " + g);
+
 
         // Создаем объект DotExporter после упрощения выражения
         DotExporter dotG = new DotExporter();
 
+        System.out.println("DOT-граф f:");
+        System.out.println(dotG.export(f));
+
         System.out.println("DOT-граф g:");
         System.out.println(dotG.export(g));
+
+//        // Пример выражения: (x + 1) * (x + 1)
+//        Node expression = new BinaryOperationNode(
+//                new BinaryOperationNode(new VariableNode("x"), new ConstantNode(1), "+"),
+//                new BinaryOperationNode(new VariableNode("x"), new ConstantNode(1), "+"),
+//                "*"
+//        );
+//
+//        Node simplifiedExpression = Simplifier.simplify(expression);
+//
+//        // Печатаем упрощенное выражение
+//        System.out.println(simplifiedExpression);
     }
 }
