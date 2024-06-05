@@ -1,12 +1,18 @@
 package lab_v1;
+
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 public class DotExporter {
     private int nodeId = 0;
+    private final HashMap<Node, String> nodeMap = new HashMap<>();
+    private final Set<Node> uniqueNodes = new HashSet<>();
 
     public String export(Node root) {
         StringBuilder sb = new StringBuilder();
         sb.append("digraph G {\n");
-        exportNode(root, sb, generateNodeId());
+        exportNode(root, sb);
         sb.append("}");
         return sb.toString();
     }
@@ -14,49 +20,78 @@ public class DotExporter {
     // Метод для получения метки узла в зависимости от его типа
     private String getNodeLabel(Node node) {
         return switch (node) {
-            case OperatorNode binaryOperationNode -> binaryOperationNode.getOperator() + "";
+            case OperatorNode operatorNode -> operatorNode.getOperator() + "";
             case UnaryOperationNode unaryOperationNode -> unaryOperationNode.getOperator() + "";
             case FunctionNode functionNode -> functionNode.getFunctionName();
             case BinaryFunctionNode binFunctionNode -> binFunctionNode.getFunctionName();
             case VariableNode variableNode -> variableNode.getName();
-            case ConstantNode numberNode -> Double.toString(numberNode.getValue());
+            case ConstantNode constantNode -> Double.toString(constantNode.getValue()); // Значение, а не идентификатор
             case null, default -> node.toString();
         };
     }
 
-    private void exportNode(Node node, StringBuilder sb, String nodeName) {
+    private void exportNode(Node node, StringBuilder sb) {
+        if (node == null) return;
 
-        if (node instanceof ConstantNode) {
-            ConstantNode constantNode = (ConstantNode) node;
-            sb.append(String.format("%s [label=\"%s\"];\n", nodeName, constantNode.getValue()));
-        } else if (node instanceof VariableNode) {
-            VariableNode variableNode = (VariableNode) node;
-            sb.append(String.format("%s [label=\"%s\"];\n", nodeName, variableNode.getName()));
-        } else if (node instanceof OperatorNode) {
+        // Проверяем, был ли этот узел уже обработан
+        if (!uniqueNodes.add(node)) {
+            return;
+        }
+
+        String nodeName = nodeMap.computeIfAbsent(node, k -> generateNodeId());
+
+        // Выводим узел только один раз с меткой
+        sb.append(String.format("%s [label=\"%s\"];\n", nodeName, getNodeLabel(node)));
+
+        if (node instanceof OperatorNode) {
             OperatorNode operatorNode = (OperatorNode) node;
-            sb.append(String.format("%s [label=\"%s\"];\n", nodeName, operatorNode.getOperator()));
-            String leftChildId = generateNodeId();
-            String rightChildId = generateNodeId();
-            exportNode(operatorNode.getLeft(), sb, leftChildId);
-            exportNode(operatorNode.getRight(), sb, rightChildId);
-            sb.append(String.format("%s -> %s;\n", nodeName, leftChildId));
-            sb.append(String.format("%s -> %s;\n", nodeName, rightChildId));
+            String leftChildId = exportChildNode(operatorNode.getLeft(), sb);
+            String rightChildId = exportChildNode(operatorNode.getRight(), sb);
+            if (leftChildId != null) {
+                sb.append(String.format("%s -> %s;\n", nodeName, leftChildId));
+            }
+            if (rightChildId != null) {
+                sb.append(String.format("%s -> %s;\n", nodeName, rightChildId));
+            }
         } else if (node instanceof FunctionNode) {
             FunctionNode functionNode = (FunctionNode) node;
-            sb.append(String.format("%s [label=\"%s\"];\n", nodeName, functionNode.getFunctionName()));
-            String argumentChildId = generateNodeId();
-            exportNode(functionNode.getArgument(), sb, argumentChildId);
-            sb.append(String.format("%s -> %s;\n", nodeName, argumentChildId));
+            String argumentChildId = exportChildNode(functionNode.getArgument(), sb);
+            if (argumentChildId != null) {
+                sb.append(String.format("%s -> %s;\n", nodeName, argumentChildId));
+            }
         } else if (node instanceof BinaryFunctionNode) {
             BinaryFunctionNode functionNode = (BinaryFunctionNode) node;
-            sb.append(String.format("%s [label=\"%s\"];\n", nodeName, functionNode.getFunctionName()));
-            String leftChildId = generateNodeId();
-            String rightChildId = generateNodeId();
-            exportNode(functionNode.getLeft(), sb, leftChildId);
-            exportNode(functionNode.getRight(), sb, rightChildId);
-            sb.append(String.format("%s -> %s;\n", nodeName, leftChildId));
-            sb.append(String.format("%s -> %s;\n", nodeName, rightChildId));
+            String leftChildId = exportChildNode(functionNode.getLeft(), sb);
+            String rightChildId = exportChildNode(functionNode.getRight(), sb);
+            if (leftChildId != null) {
+                sb.append(String.format("%s -> %s;\n", nodeName, leftChildId));
+            }
+            if (rightChildId != null) {
+                sb.append(String.format("%s -> %s;\n", nodeName, rightChildId));
+            }
         }
+    }
+
+
+    /*
+    используем метку узла как идентификатор для связи, чтобы вместо идентификатора узла использовать его значение.
+    */
+
+    private String exportChildNode(Node child, StringBuilder sb) {
+        if (child == null) return null;
+
+        // Листовые узлы (ConstantNode и VariableNode) выводим с их значениями вместо идентификаторов
+        if (child instanceof ConstantNode || child instanceof VariableNode) {
+            String valueLabel = getNodeLabel(child);
+            sb.append(String.format("%s [label=\"%s\"];\n", valueLabel, valueLabel));
+            return valueLabel;
+        }
+
+        // Обрабатываем дочерний узел, если он не листовой
+        if (!nodeMap.containsKey(child)) {
+            exportNode(child, sb);
+        }
+        return nodeMap.get(child);
     }
 
     private String generateNodeId() {
