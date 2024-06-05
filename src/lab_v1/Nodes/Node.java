@@ -1,4 +1,4 @@
-package lab_v1;
+package lab_v1.Nodes;
 
 import java.util.Map;
 

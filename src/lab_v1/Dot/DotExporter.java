@@ -1,8 +1,10 @@
-package lab_v1;
+package lab_v1.Dot;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
+import lab_v1.Nodes.*;
 
 public class DotExporter {
     private int nodeId = 0;

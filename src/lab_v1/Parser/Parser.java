@@ -1,4 +1,6 @@
-package lab_v1;
+package lab_v1.Parser;
+
+import lab_v1.Nodes.*;
 
 import java.util.*;
 
@@ -13,11 +15,10 @@ public class Parser {
 
     private Node applyOperator(char operator, Stack<Node> nodes) {
         Node right = nodes.pop();
-        Node left = nodes.isEmpty() ? null : nodes.pop(); // Добавляем проверку на пустой стек
+        Node left = nodes.isEmpty() ? null : nodes.pop();
 
-        // Проверяем операнды на null
         if (left == null || right == null) {
-            throw new IllegalArgumentException("Invalid expression");
+            throw new IllegalArgumentException("Недоступное выражение");
         }
 
         return new OperatorNode(left, right, String.valueOf(operator));
@@ -31,6 +32,8 @@ public class Parser {
             case '*':
             case '/':
                 return 2;
+            case '^':
+                return 3; // Установим приоритет для оператора '^'
             default:
                 return 0;
         }
@@ -63,19 +66,19 @@ public class Parser {
                         nodes.push(applyOperator(ops.pop(), nodes));
                     }
                     if (!ops.isEmpty()) {
-                        ops.pop(); // Удаляем '('
+                        ops.pop();
                     }
 
-                    // Check for function call
-                    if (!ops.isEmpty() && Character.isLetter(ops.peek())) {
-                        char function = ops.pop();
-                        if (function == 'c') {
-                            nodes.push(new FunctionNode(nodes.pop(), "cos"));
-                        } else if (function == 'w') { // Обработка функции pow
-                            Node right = nodes.pop();
-                            Node left = nodes.pop();
-                            nodes.push(new BinaryFunctionNode(left, right, "pow"));
-                            ops.pop(); // Удаляем 'w'
+                    if (!ops.isEmpty() && ops.peek() == 'p') {
+                        ops.pop(); // Удаляем 'p'
+                        if (i + 2 < expression.length() && expression.substring(i + 1, i + 3).equals("ow")) {
+                            i += 2; // Пропускаем 'ow'
+
+                            while (!ops.isEmpty() && precedence(ops.peek()) >= precedence('^')) {
+                                nodes.push(applyOperator(ops.pop(), nodes));
+                            }
+                            ops.push('^'); // Добавляем '^' в стек операций
+
                         }
                     }
                 } else {

@@ -1,4 +1,4 @@
-package lab_v1;
+package lab_v1.Nodes;
 
 import java.util.Map;
 
@@ -14,9 +14,10 @@ public class OperatorNode extends Node {
     }
 
     @Override
-    public double evaluate(Map<String, Double> variables) {
-        // Проверяем оператор и выполняем соответствующую операцию
-        switch (operator) {
+    public double evaluate(Map<String, Double> variables)
+    {
+        switch (operator)
+        {
             case "+":
                 return left.evaluate(variables) + right.evaluate(variables);
             case "-":
@@ -28,7 +29,8 @@ public class OperatorNode extends Node {
             case "(": // Обработка оператора '('
                 return right.evaluate(variables); // Просто возвращаем результат правого узла
             case ",":
-                return right.evaluate(variables); // Просто возвращаем результат правого узла для запятой
+                // return right.evaluate(variables); // Просто возвращаем результат правого узла для запятой
+                return Math.pow(left.evaluate(variables), right.evaluate(variables)); // Возводим левый узел в степень, заданную правым узлом
             default:
                 throw new UnsupportedOperationException("Unknown operator: " + operator);
         }

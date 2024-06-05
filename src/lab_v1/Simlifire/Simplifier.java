@@ -1,4 +1,10 @@
-package lab_v1;
+package lab_v1.Simlifire;
+
+import lab_v1.Nodes.Node; // Базовый класс
+import lab_v1.Nodes.ConstantNode; // Узел, представляющий константное значение (например, число)
+import lab_v1.Nodes.FunctionNode; // Узел, представляющий функцию, которая принимает один аргумент.
+import lab_v1.Nodes.OperatorNode; // Узел, представляющий бинарную операцию (например, +, -, *, /).
+import lab_v1.Nodes.UnaryOperationNode; // Узел, представляющий унарную операцию (например, отрицание числа -x).
 
 import java.util.*;
 
@@ -7,7 +13,6 @@ public class Simplifier {
         List<Node> uniqueNodes = new ArrayList<>();
         return simplifyExpression(expression, uniqueNodes);
     }
-
 
 
     private static Node simplifyExpression(Node expression, List<Node> uniqueNodes) {
@@ -25,7 +30,6 @@ public class Simplifier {
             Node left = simplifyExpression(binaryNode.getLeft(), uniqueNodes);
             Node right = simplifyExpression(binaryNode.getRight(), uniqueNodes);
 
-            // Применяем правила упрощения
             if (left instanceof ConstantNode && right instanceof ConstantNode) {
                 double leftValue = ((ConstantNode) left).getValue();
                 double rightValue = ((ConstantNode) right).getValue();
@@ -42,12 +46,12 @@ public class Simplifier {
                         break;
                     case "/":
                         if (rightValue == 0) {
-                            throw new ArithmeticException("Division by zero");
+                            throw new ArithmeticException("Ошибка при делении на 0");
                         }
                         result = leftValue / rightValue;
                         break;
                     default:
-                        throw new IllegalArgumentException("Unsupported operator: " + binaryNode.getOperator());
+                        throw new IllegalArgumentException("Не поддерживаемый оператор: " + binaryNode.getOperator());
                 }
                 ConstantNode simplifiedNode = new ConstantNode(result);
                 uniqueNodes.add(simplifiedNode); // Добавляем упрощенный узел в список
@@ -74,8 +78,7 @@ public class Simplifier {
             uniqueNodes.add(simplifiedNode); // Добавляем упрощенный узел в список
             return simplifiedNode;
         } else {
-            // Если узел не является операцией, то он уже упрощен
-            uniqueNodes.add(expression);
+            uniqueNodes.add(expression); // Если узел не является операцией, то он уже упрощен
             return expression;
         }
     }

@@ -1,44 +1,40 @@
 package lab_v1;
 
-import java.util.*;
+import lab_v1.Dot.DotExporter;
+import lab_v1.Nodes.Node;
+import lab_v1.Parser.Parser;
+import lab_v1.Simlifire.Simplifier;
+
+import java.util.Map;
+import java.util.concurrent.*;
 
 public class Main {
-    public static void main(String[] args)
-    {
-//        Parser parser = new Parser();
-//        Node f = parser.parse("(x + 1) * (x + 1) + (x + 1) * 3 + (x + 1) * (x + 1)"); // Вызов функции pow
-//        Map<String, Double> variables = Map.of("x", 2.0, "y", 2.0); // Задаем значения переменных
-//        double result = f.evaluate(variables); // Вычисляем результат
-//        System.out.println("Результат: " + result); // Выводим результат
-//
-//        Simplifier simplifier = new Simplifier();
-//        Node g = simplifier.simplify(f);
-//        System.out.println("Упрощенное выражение: " + g.evaluate(variables));
-//
-//        DotExporter exporter = new DotExporter();
-//        String dotFormat = exporter.export(g); // Используем упрощенное дерево
-//        System.out.println(dotFormat);
-
-
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
         Parser parser = new Parser();
-        Node f = parser.parse("(x + 1) * (x + 1) + (x + 1) * 3 + (x + 1) * (x + 1)");
-        Node g = Simplifier.simplify(f);
+        //Node f = parser.parse("pow(2, x)");
+        //Node f = parser.parse("(3.0 + x)");
+        Node f = parser.parse("(x + 1) * (x - 1) + (x + 1) * (x + 1) + 1)");
 
-        Map<String, Double> variables = Map.of("x", 2.0);
+        ExecutorService executor = Executors.newFixedThreadPool(2);
 
-        double resultF = f.evaluate(variables);
-        double resultG = g.evaluate(variables);
+        Future<Double> resultF = executor.submit(() -> f.evaluate(Map.of("x", 2.0)));
+        Future<Double> resultG = executor.submit(() -> Simplifier.simplify(f).evaluate(Map.of("x", 2.0)));
 
-        System.out.println("Вычисленное значение f: " + resultF);
-        System.out.println("Вычисленное значение g: " + resultG);
+        // Ожидание завершения задач
+        double fValue = resultF.get();
+        double gValue = resultG.get();
 
-        // Создаем объект DotExporter после упрощения выражения
+        executor.shutdown();
+
+        System.out.println("Вычисленное значение f: " + fValue);
+        System.out.println("Вычисленное значение g: " + gValue);
+
         DotExporter dotG = new DotExporter();
 
         System.out.println("DOT-граф f:");
         System.out.println(dotG.export(f));
 
         System.out.println("DOT-граф g:");
-        System.out.println(dotG.export(g));
+        System.out.println(dotG.export(Simplifier.simplify(f)));
     }
 }

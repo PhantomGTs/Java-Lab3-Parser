@@ -1,4 +1,4 @@
-package lab_v1;
+package lab_v1.Nodes;
 
 import java.util.Map;
 
@@ -17,8 +17,11 @@ public class FunctionNode extends Node {
         switch (functionName) {
             case "cos":
                 return Math.cos(argumentValue);
+            case "pow":
+                int exponent = (int) Math.round(argumentValue);
+                return Math.pow(argumentValue, exponent);
             default:
-                throw new UnsupportedOperationException("Unknown function: " + functionName);
+                throw new UnsupportedOperationException("Неизвестная функция " + functionName);
         }
     }
 
@@ -27,15 +30,10 @@ public class FunctionNode extends Node {
         return functionName;
     }
 
-    @Override
-    public Node getArgument() {
-        return argument;
-    }
 
     // Метод, возвращающий массив аргументов.
-    // Для этой реализации массив содержит только один аргумент.
     public Node[] getArguments() {
-        return new Node[] { argument };
+        return new Node[]{argument};
     }
 
     @Override

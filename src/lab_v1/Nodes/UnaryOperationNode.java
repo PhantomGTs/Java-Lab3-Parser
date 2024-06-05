@@ -1,4 +1,4 @@
-package lab_v1;
+package lab_v1.Nodes;
 
 import java.util.Map;
 
@@ -27,7 +27,7 @@ public class UnaryOperationNode extends Node {
             case '-':
                 return -operandValue;
             default:
-                throw new IllegalArgumentException("Invalid operator: " + operator);
+                throw new IllegalArgumentException("Недоступный оператор: " + operator);
         }
     }
 
