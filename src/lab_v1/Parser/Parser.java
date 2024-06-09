@@ -24,6 +24,7 @@ public class Parser {
         return new OperatorNode(left, right, String.valueOf(operator));
     }
 
+    // Приоритет оператора
     private int precedence(char operator) {
         switch (operator) {
             case '+':

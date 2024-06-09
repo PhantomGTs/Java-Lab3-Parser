@@ -25,6 +25,19 @@ public class Simplifier {
             }
         }
 
+        /*
+        * 1. Если узел является бинарной операцией
+        *   1.1 Рекурсивно упрощаются левый и правый операнды
+        *   1.2 Если оба операнда константы, операция вычисляется, и создается новый узел ConstantNode
+        *   1.3 В противном случае создается новый узел OperatorNode с упрощенными операндами.
+        *
+        * 2. Если узел является унарной операцией
+        *
+        * 3. Если узел является функцией
+        *
+        * 4. Если узел является константой (ConstantNode), он уже упрощен и добавляется в Если узел является константой (ConstantNode), он уже упрощен и добавляется в uniqueNodes
+        * */
+
         if (expression instanceof OperatorNode) {
             OperatorNode binaryNode = (OperatorNode) expression;
             Node left = simplifyExpression(binaryNode.getLeft(), uniqueNodes);
